@@ -1,6 +1,7 @@
 #! /usr/bin/env node
 
 import inquirer from "inquirer";
+import chalk from "chalk";
 
 type Task = {
   id: number
@@ -12,7 +13,6 @@ type Task = {
 var tasks: Task[] = [];
 
 async function addTask () {
-
   const userInput = await inquirer.prompt([
     {
       name: "title",
@@ -27,8 +27,20 @@ async function addTask () {
     completed: false,
     createdAt: new Date(),
   }
-
   tasks.push(newTask)
+}
+
+async function addTasks() {
+  do {
+    await addTask();
+    var again = await inquirer.prompt([
+        {
+            type: "input",
+            name: "restart",
+            message: "Do you want to continue adding new Task to list Press y or Y",
+        },
+    ]);
+} while (again.restart == "y" || again.restart == "Y");
 }
 
 async function completeTask() {
@@ -78,8 +90,38 @@ function printTasks (_tasks: Task[]){
   }
 }
 
+async function toDoApp() {
+  console.clear();
+  console.log(chalk.bgBlue(`Welcome to TODO Application\n`));
+  const newTodoApp = await inquirer.prompt([
+      {
+          name: "todoAppOptions",
+          type: "list",
+          message: "Choose Option Given blow : \n",
+          choices: ["Show Tasks", "Add Tasks", "Complete Task", "Delete Task"]
+      },
+  ]);
 
+  switch (newTodoApp.todoAppOptions) {
+    case "Show Tasks":
+      printTasks(tasks);
+      break;
+    case "Add Tasks":
+      await addTasks();
+      break;
+    case "Complete Task":
+      await completeTask();
+      break;
+    case "Delete Task":
+      await deleteTask();
+      break;
+    default:
+      console.log("Something went wrong");
+      break;
+  }
+}
 
+await toDoApp();
 
 // do {
 //   await addTask();
