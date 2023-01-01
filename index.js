@@ -19,18 +19,21 @@ async function addTask() {
     tasks.push(newTask);
 }
 async function addTasks() {
+    printTasks(tasks);
     do {
         await addTask();
         var again = await inquirer.prompt([
             {
                 type: "input",
                 name: "restart",
-                message: "Do you want to continue adding news Press y or Y",
+                message: "Do you want to continue adding new Task to list Press y or Y",
             },
         ]);
     } while (again.restart == "y" || again.restart == "Y");
+    printTasks(tasks);
 }
 async function completeTask() {
+    printTasks(tasks);
     const userInput = await inquirer.prompt([
         {
             name: "taskID",
@@ -48,6 +51,7 @@ async function completeTask() {
     }
 }
 async function deleteTask() {
+    printTasks(tasks);
     const userInput = await inquirer.prompt([
         {
             name: "taskID",
@@ -104,7 +108,20 @@ async function toDoApp() {
             break;
     }
 }
-await toDoApp();
+// await toDoApp();
+async function runAgain() {
+    do {
+        await toDoApp();
+        var again = await inquirer.prompt([
+            {
+                type: "input",
+                name: "restart",
+                message: "Do you want to continue use todo app? Press y or Y",
+            },
+        ]);
+    } while (again.restart == "y" || again.restart == "Y");
+}
+await runAgain();
 // do {
 //   await addTask();
 //   var again = await inquirer.prompt([
