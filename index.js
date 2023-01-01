@@ -1,5 +1,6 @@
 #! /usr/bin/env node
 import inquirer from "inquirer";
+import chalk from "chalk";
 var tasks = [];
 async function addTask() {
     const userInput = await inquirer.prompt([
@@ -16,6 +17,18 @@ async function addTask() {
         createdAt: new Date(),
     };
     tasks.push(newTask);
+}
+async function addTasks() {
+    do {
+        await addTask();
+        var again = await inquirer.prompt([
+            {
+                type: "input",
+                name: "restart",
+                message: "Do you want to continue adding news Press y or Y",
+            },
+        ]);
+    } while (again.restart == "y" || again.restart == "Y");
 }
 async function completeTask() {
     const userInput = await inquirer.prompt([
@@ -51,7 +64,7 @@ async function deleteTask() {
         console.log("Given ID is not present.");
     }
 }
-function printArray(_tasks) {
+function printTasks(_tasks) {
     if (_tasks.length == 0) {
         console.log(`No Tasks are added in Todo App!`);
     }
@@ -62,18 +75,48 @@ function printArray(_tasks) {
         }
     }
 }
-do {
-    await addTask();
-    var again = await inquirer.prompt([
+async function toDoApp() {
+    console.clear();
+    console.log(chalk.bgBlue(`Welcome to TODO Application\n`));
+    const newTodoApp = await inquirer.prompt([
         {
-            type: "input",
-            name: "restart",
-            message: "Do you want to continue using this? Press y or Y",
+            name: "todoAppOptions",
+            type: "list",
+            message: "Choose Option Given blow : \n",
+            choices: ["Show Tasks", "Add Tasks", "Complete Task", "Delete Task"]
         },
     ]);
-} while (again.restart == "y" || again.restart == "Y");
-printArray(tasks);
-await completeTask();
-await deleteTask();
-printArray(tasks);
+    switch (newTodoApp.todoAppOptions) {
+        case "Show Tasks":
+            printTasks(tasks);
+            break;
+        case "Add Tasks":
+            await addTasks();
+            break;
+        case "Complete Task":
+            await completeTask();
+            break;
+        case "Delete Task":
+            await deleteTask();
+            break;
+        default:
+            console.log("Something went wrong");
+            break;
+    }
+}
+await toDoApp();
+// do {
+//   await addTask();
+//   var again = await inquirer.prompt([
+//       {
+//           type: "input",
+//           name: "restart",
+//           message: "Do you want to continue using this? Press y or Y",
+//       },
+//   ]);
+// } while (again.restart == "y" || again.restart == "Y");
+// printTasks(tasks);
+// await completeTask();
+// await deleteTask();
+// printTasks(tasks)
 // console.log(addTask(userInput.title));
