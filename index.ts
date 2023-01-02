@@ -31,7 +31,6 @@ async function addTask () {
 }
 
 async function addTasks() {
-  printTasks(tasks)
   do {
     await addTask();
     var again = await inquirer.prompt([
@@ -42,11 +41,9 @@ async function addTasks() {
         },
     ]);
   } while (again.restart == "y" || again.restart == "Y");
-  printTasks(tasks)
 }
 
 async function completeTask() {
-  printTasks(tasks)
   const userInput = await inquirer.prompt([
     {
       name: "taskID",
@@ -55,17 +52,22 @@ async function completeTask() {
     }
   ]);
 
-  if(userInput.taskID <= tasks.length){
-    tasks[userInput.taskID-1].completed = true;
-    // console.clear();
-    console.log(`You just completed task! ${userInput.taskID}`);
+  if(userInput.taskID <= tasks.length && userInput.taskID > 0){
+    for (let index = 0; index < tasks.length; index++) {
+      const element = tasks[index].id;
+      if (element == userInput.taskID) {
+        tasks[index].completed = true;
+        console.log(`You just Completed task! ${userInput.taskID}`);
+      }
+    }
   } else {
     console.log("Given ID is not present.");
   }
+
+  
 }
 
 async function deleteTask() {
-  printTasks(tasks)
   const userInput = await inquirer.prompt([
     {
       name: "taskID",
