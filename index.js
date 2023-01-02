@@ -8,7 +8,7 @@ async function addTask() {
             name: "title",
             type: "string",
             message: "What task do you want to add: ",
-        }
+        },
     ]);
     const newTask = {
         id: tasks.length + 1,
@@ -31,18 +31,20 @@ async function addTasks() {
     } while (again.restart == "y" || again.restart == "Y");
 }
 async function completeTask() {
+    printTasks(tasks);
     const userInput = await inquirer.prompt([
         {
             name: "taskID",
             type: "number",
             message: "What task you completed today (give task id): ",
-        }
+        },
     ]);
     if (userInput.taskID <= tasks.length && userInput.taskID > 0) {
         for (let index = 0; index < tasks.length; index++) {
             const element = tasks[index].id;
             if (element == userInput.taskID) {
                 tasks[index].completed = true;
+                printTasks(tasks);
                 console.log(`You just Completed task! ${userInput.taskID}`);
             }
         }
@@ -51,31 +53,19 @@ async function completeTask() {
         console.log("Given ID is not present.");
     }
 }
-async function deleteTask() {
-    const userInput = await inquirer.prompt([
-        {
-            name: "taskID",
-            type: "number",
-            message: "What task you want to delete today (give task id): ",
-        }
-    ]);
-    if (userInput.taskID <= tasks.length) {
-        tasks.splice(userInput.taskID - 1, 1);
-        // console.clear();
-        console.log(`You just deleted task! ${userInput.taskID}`);
-    }
-    else {
-        console.log("Given ID is not present.");
-    }
+async function deleteAllTask() {
+    console.clear();
+    tasks = [];
+    console.log("All Tasks are Deleted!");
 }
 function printTasks(_tasks) {
     if (_tasks.length == 0) {
         console.log(`No Tasks are added in Todo App!`);
     }
     else {
-        console.log(`ID \t Todo \t Completion \t Dated`);
+        console.log(`ID \t Todo \t\t\t Completion \t Dated`);
         for (let index = 0; index < _tasks.length; index++) {
-            console.log(`${_tasks[index].id} \t ${_tasks[index].title} \t ${_tasks[index].completed} \t ${_tasks[index].createdAt}`);
+            console.log(`${_tasks[index].id} \t ${_tasks[index].title} \t\t\t ${_tasks[index].completed} \t ${_tasks[index].createdAt}`);
         }
     }
 }
@@ -87,7 +77,7 @@ async function toDoApp() {
             name: "todoAppOptions",
             type: "list",
             message: "Choose Option Given blow : \n",
-            choices: ["Show Tasks", "Add Tasks", "Complete Task", "Delete Task"]
+            choices: ["Show Tasks", "Add Tasks", "Complete Task", "Delete All Tasks"],
         },
     ]);
     switch (newTodoApp.todoAppOptions) {
@@ -100,15 +90,14 @@ async function toDoApp() {
         case "Complete Task":
             await completeTask();
             break;
-        case "Delete Task":
-            await deleteTask();
+        case "Delete All Tasks":
+            await deleteAllTask();
             break;
         default:
             console.log("Something went wrong");
             break;
     }
 }
-// await toDoApp();
 async function runAgain() {
     do {
         await toDoApp();
@@ -122,18 +111,3 @@ async function runAgain() {
     } while (again.restart == "y" || again.restart == "Y");
 }
 await runAgain();
-// do {
-//   await addTask();
-//   var again = await inquirer.prompt([
-//       {
-//           type: "input",
-//           name: "restart",
-//           message: "Do you want to continue using this? Press y or Y",
-//       },
-//   ]);
-// } while (again.restart == "y" || again.restart == "Y");
-// printTasks(tasks);
-// await completeTask();
-// await deleteTask();
-// printTasks(tasks)
-// console.log(addTask(userInput.title));
