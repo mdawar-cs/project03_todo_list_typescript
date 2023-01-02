@@ -124,7 +124,7 @@ async function runAgain() {
       {
         type: "input",
         name: "restart",
-        message: "Do you want to continue use todo app? Press y or Y",
+        message: "Do you want to continue using todo app? Press y or Y",
       },
     ]);
   } while (again.restart == "y" || again.restart == "Y");
