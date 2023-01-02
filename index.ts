@@ -4,94 +4,84 @@ import inquirer from "inquirer";
 import chalk from "chalk";
 
 type Task = {
-  id: number
-  title: string
-  completed: boolean
-  createdAt: Date
-}
+  id: number;
+  title: string;
+  completed: boolean;
+  createdAt: Date;
+};
 
 var tasks: Task[] = [];
 
-async function addTask () {
+async function addTask() {
   const userInput = await inquirer.prompt([
     {
       name: "title",
       type: "string",
       message: "What task do you want to add: ",
-    }
+    },
   ]);
-  
+
   const newTask: Task = {
-    id: tasks.length+1,
+    id: tasks.length + 1,
     title: userInput.title,
     completed: false,
     createdAt: new Date(),
-  }
-  tasks.push(newTask)
+  };
+  tasks.push(newTask);
 }
 
 async function addTasks() {
   do {
     await addTask();
     var again = await inquirer.prompt([
-        {
-            type: "input",
-            name: "restart",
-            message: "Do you want to continue adding new Task to list Press y or Y",
-        },
+      {
+        type: "input",
+        name: "restart",
+        message: "Do you want to continue adding new Task to list Press y or Y",
+      },
     ]);
   } while (again.restart == "y" || again.restart == "Y");
 }
 
 async function completeTask() {
+  printTasks(tasks);
   const userInput = await inquirer.prompt([
     {
       name: "taskID",
       type: "number",
       message: "What task you completed today (give task id): ",
-    }
+    },
   ]);
 
-  if(userInput.taskID <= tasks.length && userInput.taskID > 0){
+  if (userInput.taskID <= tasks.length && userInput.taskID > 0) {
     for (let index = 0; index < tasks.length; index++) {
       const element = tasks[index].id;
       if (element == userInput.taskID) {
         tasks[index].completed = true;
+        printTasks(tasks);
         console.log(`You just Completed task! ${userInput.taskID}`);
       }
     }
   } else {
     console.log("Given ID is not present.");
   }
-
-  
 }
 
-async function deleteTask() {
-  const userInput = await inquirer.prompt([
-    {
-      name: "taskID",
-      type: "number",
-      message: "What task you want to delete today (give task id): ",
-    }
-  ]);
-
-  if(userInput.taskID <= tasks.length){
-    tasks.splice(userInput.taskID-1,1)
-    // console.clear();
-    console.log(`You just deleted task! ${userInput.taskID}`);
-  } else {
-    console.log("Given ID is not present.");
-  }
+async function deleteAllTask() {
+  console.clear();
+  tasks = [];
+  console.log("All Tasks are Deleted!");
 }
 
-function printTasks (_tasks: Task[]){
-  if(_tasks.length == 0) {
+function printTasks(_tasks: Task[]) {
+  if (_tasks.length == 0) {
     console.log(`No Tasks are added in Todo App!`);
   } else {
-    console.log(`ID \t Todo \t Completion \t Dated`);
+    console.log(`ID \t Todo \t\t\t Completion \t Dated`);
     for (let index = 0; index < _tasks.length; index++) {
-     console.log(`${_tasks[index].id} \t ${_tasks[index].title} \t ${_tasks[index].completed} \t ${_tasks[index].createdAt}`);
+      console.log(
+        `${_tasks[index].id} \t ${_tasks[index].title} \t\t\t ${_tasks[index].completed} \t ${_tasks[index].createdAt}`
+      );
     }
   }
 }
@@ -100,12 +90,12 @@ async function toDoApp() {
   console.clear();
   console.log(chalk.bgBlue(`Welcome to TODO Application\n`));
   const newTodoApp = await inquirer.prompt([
-      {
-          name: "todoAppOptions",
-          type: "list",
-          message: "Choose Option Given blow : \n",
-          choices: ["Show Tasks", "Add Tasks", "Complete Task", "Delete Task"]
-      },
+    {
+      name: "todoAppOptions",
+      type: "list",
+      message: "Choose Option Given blow : \n",
+      choices: ["Show Tasks", "Add Tasks", "Complete Task", "Delete All Tasks"],
+    },
   ]);
 
   switch (newTodoApp.todoAppOptions) {
@@ -118,8 +108,8 @@ async function toDoApp() {
     case "Complete Task":
       await completeTask();
       break;
-    case "Delete Task":
-      await deleteTask();
+    case "Delete All Tasks":
+      await deleteAllTask();
       break;
     default:
       console.log("Something went wrong");
@@ -127,38 +117,16 @@ async function toDoApp() {
   }
 }
 
-// await toDoApp();
-
 async function runAgain() {
   do {
-      await toDoApp();
-      var again = await inquirer.prompt([
-          {
-              type: "input",
-              name: "restart",
-              message: "Do you want to continue use todo app? Press y or Y",
-          },
-      ]);
+    await toDoApp();
+    var again = await inquirer.prompt([
+      {
+        type: "input",
+        name: "restart",
+        message: "Do you want to continue use todo app? Press y or Y",
+      },
+    ]);
   } while (again.restart == "y" || again.restart == "Y");
 }
 await runAgain();
-
-
-// do {
-//   await addTask();
-//   var again = await inquirer.prompt([
-//       {
-//           type: "input",
-//           name: "restart",
-//           message: "Do you want to continue using this? Press y or Y",
-//       },
-//   ]);
-// } while (again.restart == "y" || again.restart == "Y");
-
-
-// printTasks(tasks);
-// await completeTask();
-// await deleteTask();
-// printTasks(tasks)
-
-// console.log(addTask(userInput.title));
